@@ -1,3 +1,2 @@
-echo running hugo...
-"$DEPLOYMENT_SOURCE/bin/hugo.exe" -s "$DEPLOYMENT_SOURCE" -d "$DEPLOYMENT_TARGET/public" --log -v
-exitWithMessageOnError "Hugo site generation failed"
+[config]
+command = deploy.cmd
