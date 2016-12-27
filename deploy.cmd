@@ -61,7 +61,7 @@ IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
 )
 
 echo running hugo...
-"%DEPLOYMENT_SOURCE%/bin/hugo.exe" -s "%DEPLOYMENT_SOURCE%" -d "%DEPLOYMENT_TARGET%/public" --log -v exitWithMessageOnError "Hugo site generation failed"
+"%DEPLOYMENT_SOURCE%/bin/hugo.exe" -s "%DEPLOYMENT_SOURCE%" -d "%DEPLOYMENT_TARGET%/public" --log -v
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
 
