@@ -30,7 +30,7 @@ disqusShortname = "spf13"
 	olderPosts = ""
 	newerPosts = ""
 	readMore = ""
-	copyright = "(c) Simon Korzunov"
+	copyright = "(c) Simon Korzunov, powered by Hugo"
 	# Sharing options and author information in posts
 	aboutAuthor = "A former game developer, proud father, C# lover, WedDev learner/struggler and a Microsoft employee."
 	tweet = ""

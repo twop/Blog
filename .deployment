@@ -1,0 +1,2 @@
+& "$DEPLOYMENT_SOURCE/bin/hugo.exe" -s "$DEPLOYMENT_SOURCE" -d "$DEPLOYMENT_SOURCE/public" --log -v
+exitWithMessageOnError "Hugo site generation failed"
