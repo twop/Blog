@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "http://www.twopennycode.com/"
+baseurl = "http://twopennycode.azurewebsites.net/"
 languageCode = "en-us"
 title = "Twopenny code"
 theme = "hugo-cactus-theme"
