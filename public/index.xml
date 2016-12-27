@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Twopenny code</title>
+    <link>http://www.twopennycode.com/index.xml</link>
+    <description>Recent content on Twopenny code</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>(c) Simon Korzunov</copyright>
+    <lastBuildDate>Mon, 26 Dec 2016 11:46:25 -0800</lastBuildDate>
+    <atom:link href="http://www.twopennycode.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Angular2 first steps</title>
+      <link>http://www.twopennycode.com/post/angular2-firststeps/</link>
+      <pubDate>Mon, 26 Dec 2016 11:46:25 -0800</pubDate>
+      
+      <guid>http://www.twopennycode.com/post/angular2-firststeps/</guid>
+      <description>
+
+&lt;h1 id=&#34;doing-first-steps-in-angular&#34;&gt;Doing first steps in angular&lt;/h1&gt;
+
+&lt;p&gt;In this post, I will share my learning curve of &lt;a href=&#34;https://angular.io/&#34;&gt;angular2&lt;/a&gt; and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem &lt;del&gt;struggling&lt;/del&gt; findings.&lt;/p&gt;
+
+&lt;h2 id=&#34;tour-of-heroes&#34;&gt;Tour of heroes&lt;/h2&gt;
+
+&lt;p&gt;The first step for me was the &lt;a href=&#34;https://angular.io/docs/ts/latest/tutorial/&#34;&gt;Tour of heroes&lt;/a&gt; tutorial. And it was awesome. Unfortunately, I haven&amp;rsquo;t finished the routing chapter because it was not working at the time, it seems that it was in the middle of rework of some sort. So &lt;a href=&#34;https://angular.io/docs/ts/latest/guide/router.html&#34;&gt;routing&lt;/a&gt; is on my endless list of &amp;ldquo;things to learn&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;I came from a C#/C++ background of doing things and it was almost natural for me to start with &lt;a href=&#34;https://www.typescriptlang.org/&#34;&gt;TypeScript&lt;/a&gt;. It did make my learning curve way smoother, and it actually was the key factor why I picked angular2 to start my front-end exploration.&lt;/p&gt;
+
+&lt;p&gt;I do recommend the tutorial for everybody new to the ecosystem. The &lt;a href=&#34;https://angular.io/docs/ts/latest/quickstart.html&#34;&gt;Quick Start guide&lt;/a&gt; was super helpful, its &lt;a href=&#34;https://github.com/angular/quickstart&#34;&gt;repo&lt;/a&gt; also contains unit testing boilerplate which is totally awesome (it took me a couple of evenings to run my first karma/jasmine test). Unfortunately, it uses &lt;a href=&#34;https://github.com/systemjs/systemjs&#34;&gt;systemjs&lt;/a&gt; instead of &lt;a href=&#34;https://webpack.github.io/&#34;&gt;webpack&lt;/a&gt; which gave me a lot of extra work to do, since the majority of relevant samples use webpack which doesn&amp;rsquo;t even remotely look close to systemjs in terms of project structure.&lt;/p&gt;
+
+&lt;p&gt;One of my goals was to understand how to organize the state of an application in angular:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;@Injectable()
+export class HeroService {
+  getHeroes(): Hero[] {
+    return HEROES;
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are a couple of really cool concepts built-in that example:
+* It is decoupled from a view.
+* It takes advantage of &lt;a href=&#34;https://angular.io/docs/ts/latest/cookbook/dependency-injection.html&#34;&gt;angular DI&lt;/a&gt; to be easily reusable everywhere.&lt;/p&gt;
+
+&lt;p&gt;While I do appreciate the flexibility it is not opinionated enough to force me into any architectural decisions right away. And I fall into the trap of coupling state and behavior in my initial version.&lt;/p&gt;
+
+&lt;h2 id=&#34;applying-it-to-slopflow-https-github-com-twop-slopflow-editor&#34;&gt;Applying it to &lt;a href=&#34;https://github.com/twop/SlopFlow.Editor&#34;&gt;SlopFlow&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;The project aims to be a web editor for flow based visual programming. Where &lt;strong&gt;Node&lt;/strong&gt; is a logic primitive of building &lt;strong&gt;Flows&lt;/strong&gt; which can be used in other high order flows. Example: flow that calculates a sum of 4 numbers can be represented as graph that consists of 3 &lt;strong&gt;sum2&lt;/strong&gt; nodes.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;num1
+     \
+num2 - sum2 \
+              sum2 - result
+num3 - sum2 /
+     / 
+num4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The editor has to have a rich set of features including undo/redo and drag&amp;amp;drop with a desktop-like user experience. That&amp;rsquo;s why I think angular2 is a good fit.&lt;/p&gt;
+
+&lt;h2 id=&#34;model&#34;&gt;Model&lt;/h2&gt;
+
+&lt;p&gt;I knew I wanted to decouple presentational layer from the logic but where do you draw the line? What if I have a logic of building layouts? Where should Drag&amp;amp;Drop handling go?&lt;/p&gt;
+
+&lt;p&gt;So I decided to build UnitTestable core of the application almost agnostic to angular utilizing only DI and then move to UI. I started with the following model:&lt;/p&gt;
+
+&lt;p&gt;A generic port can be described as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export interface IPort
+{
+  name: string;
+  dataType: DataType; // int, string, float or MyCustomType
+  isInput : boolean;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Any element can be described as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export interface INode // Flow and Node will implement it
+{
+  name: string;
+  inputs: IPort[];
+  outputs: IPort[];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Node implementation:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export class Node implements INode
+{
+  constructor(public name: string) { }
+
+  inputs: IPort[] = [];
+  outputs: IPort[] = [];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With Flow, it is a little bit trickier because it can have nested elements of type Flow and Node. You can also have multiple elements of the same type within Flow, in other words &lt;strong&gt;instances&lt;/strong&gt; of templates:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export class NodeInstance implements INode
+{
+  constructor(public name: string, public node:INode) {}
+
+  inputs: IPort[];
+  outputs: IPort[];
+}
+
+// Ports should be created from the template using wrapPort:
+const wrapPort = (port: IPort) =&amp;gt; {name: port.name, dataType: port.dataType, isInput: port.isInput};
+
+export class Flow implements INode
+{
+  constructor(public name:string) {}
+
+  inputs: IPort[] = [];
+  outputs: IPort[] = [];
+
+  nodes: NodeInstance[] = [];
+  links: PortLink[] = [];
+}
+
+export class PortLink
+{
+  constructor(
+    public fromNode: NodeInstance,
+    public fromPort: IPort,
+    public toNode: NodeInstance,
+    public toPort: IPort)
+  {}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Root object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export class Scene
+{
+  activeWorkspace: Workspace = null;
+
+  nodes: Node[] = [];
+  nodeWorkspaces: NodeWorkspace[] = [];
+
+  flows:Flow[] = [];
+  flowWorkspaces: FlowWorkspace[] = []; 
+
+  // handling scene commands: adding/removing Node/Flow
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that neither of them has any sort of id and all relationships are represented by references. Each individual component is sufficient to describe its own state which makes component traversal super easy. After reading about &lt;a href=&#34;http://blog.angular-university.io/how-does-angular-2-change-detection-really-work/&#34;&gt;smart angular2 detection&lt;/a&gt; I thought that I didn&amp;rsquo;t need any sort of normalization and could get away with just modifying objects directly.&lt;/p&gt;
+
+&lt;p&gt;There are several downsides:
+* There is no way to build a route to the Flow in such model.
+* It is really hard to flatten the state to serialize/deserialize from a DB.
+* When do I rebuild &lt;strong&gt;NodeInstance&lt;/strong&gt; if the underlying template changes?&lt;/p&gt;
+
+&lt;p&gt;Angular2 change detection worked like magic and for a while I was able to make progress without any obstacles.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;@Component()
+export class AssetsComponent 
+{
+  constructor(public scene: Scene) { }
+  // implementation of activateWorkspace
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;div class=&amp;quot;card&amp;quot;&amp;gt;
+  &amp;lt;div class=&amp;quot;card-block&amp;quot;&amp;gt;
+    &amp;lt;span class=&amp;quot;my-panel-header&amp;quot;&amp;gt;Nodes&amp;lt;/span&amp;gt;
+       &amp;lt;ul class=&amp;quot;nodeList&amp;quot;&amp;gt;
+      &amp;lt;li *ngFor=&amp;quot;let workspace of scene.getNodeWorkspaces()&amp;quot; [class.selected]=&amp;quot;workspace === scene.activeWorkspace&amp;quot;
+          (click)=&amp;quot;activateWorkspace(workspace)&amp;quot;&amp;gt;
+        &amp;lt;span class=&amp;quot;type-marker node-marker&amp;quot;&amp;gt;&amp;amp;lt;N&amp;amp;gt;&amp;lt;/span&amp;gt;&amp;lt;span class=&amp;quot;vertical-middle&amp;quot;&amp;gt;{{workspace.name}}&amp;lt;/span&amp;gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;let workspace of scene.getNodeWorkspaces() + {{workspace.name}}&lt;/code&gt; worked just fine detecting node renaming.&lt;/p&gt;
+
+&lt;h2 id=&#34;modifying-state&#34;&gt;Modifying state&lt;/h2&gt;
+
+&lt;p&gt;It is natural to have undo/redo pattern in an editor. So any changes related to a Flow/Node have to be undoable and scoped to an entity (each entity has its own history). There are two general approaches:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Command pattern. Each command has enough information to change state and revert it back.&lt;/li&gt;
+&lt;li&gt;Keep the full history of object states. It takes more space but makes adding features a breeze: you don&amp;rsquo;t need to think about reverting changes it is essentially &amp;ldquo;free&amp;rdquo;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I decided to implement Command pattern:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export interface IWorkSpaceCommand
+{
+  Execute(workspace: Workspace, logger: Log): void;
+  Revert(workspace: Workspace, logger: Log): void;
+}
+
+export abstract class Workspace
+{
+  private undoCommands: IWorkSpaceCommand[] = [];
+  private redoCommands: IWorkSpaceCommand[] = [];
+
+  canRedo = (): boolean =&amp;gt; this.redoCommands.length &amp;gt; 0;
+  canUndo = (): boolean =&amp;gt; this.undoCommands.length &amp;gt; 0;
+
+  undo(): void
+  {
+    if (!this.canUndo())
+      return;
+
+    var command = this.undoCommands.pop();
+    this.revertCommandInternal(command);
+    this.redoCommands.push(command);
+  }
+
+  redo(): void
+  {
+    if (!this.canRedo())
+      return;
+
+    var command = this.redoCommands.pop();
+    this.executeCommandInternal(command);
+    this.undoCommands.push(command);
+  }
+
+  protected abstract onModifiedInternal(): void;
+
+  private executeCommandInternal(command: IWorkSpaceCommand): void
+  {
+    command.Execute(this, this.log);
+    this.onModifiedInternal();
+    this.modified.emit(this);
+  }
+
+  private revertCommandInternal(command: IWorkSpaceCommand): void
+  {
+    command.Revert(this, this.log);
+    this.onModifiedInternal();
+    this.modified.emit(this);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It was relatively fast to add basic commands:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;export class NewPortCommand implements IWorkSpaceCommand
+{
+  constructor(private port: IPort) {}
+
+  Execute(workspace: Workspace, logger: Log): void
+  {
+    workspace.addPort( this.port ); //actual implementation in the workspace.
+    logger.debug(`added port ${this.port.name} in ${workspace.name}`);
+  }
+
+  Revert(workspace: Workspace, logger: Log): void
+  {
+    workspace.removePort( this.port);
+    logger.debug(`removed port ${this.port.name} in ${workspace.name}`);
+  }
+}
+
+export class Workspace
+{
+  addPort(port: NodePort): void
+  {
+    this.node.ports.push(port);
+  }
+
+  removePort(port: NodePort): void
+  {
+    const index = this.node.ports.indexOf(port, 0);
+    if (index &amp;gt; -1)
+      ports.splice(index, 1);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So in order to get a new piece of functionality I need to do the following:
+* Write business logic in the workspace class which will modify the model (don&amp;rsquo;t forget to support undo).
+* Wrap that into &lt;strong&gt;IWorkSpaceCommand&lt;/strong&gt;.
+* Think about command validation.
+* Think about propagating changes (at what point do I rebuild the node layout?).&lt;/p&gt;
+
+&lt;p&gt;So I stopped adding features after I had the following folder Structure:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Scene:
+| - workspace.ts
+| ...
+| - Commands:
+|| - deletePortCommand.ts
+|| - editNodeCommand.ts
+|| - editPortCommand.ts
+|| - newFlowCommand.ts
+|| - newNodeCommand.ts
+|| - sceneCommand.ts
+|| - workspaceCommand.ts
+|| - ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Even though I have just one place to implement business logic and the entire state is represented by a single object (aka &amp;ldquo;single source of truth&amp;rdquo;) that approach just doesn&amp;rsquo;t scale well. Too much boilerplate. And that&amp;rsquo;s when I decided to rewrite the application using &lt;a href=&#34;http://redux.js.org/&#34;&gt;redux&lt;/a&gt;. It has &amp;ldquo;free&amp;rdquo; undo/redo support and it is very opinionated on how the app state should be managed. I&amp;rsquo;m going to talk about my experience redux+angular2 in the next posts.&lt;/p&gt;
+
+&lt;h2 id=&#34;in-conclusion&#34;&gt;In conclusion&lt;/h2&gt;
+
+&lt;p&gt;Angular2 was quite easy to start with (tutorial was really good). It doesn&amp;rsquo;t force you into a particular design pattern(I wish it would) but OOP approach seems like a good fit initially which was actually a trap for me. I think if your Component has a lot of logic you are doing it wrong.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,532 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Simon Korzunov">
+		<meta name="description" content="About prorgamming">
+		<meta name="generator" content="Hugo 0.18" />
+		<title>Angular2 first steps &middot; Twopenny code</title>
+		<link rel="shortcut icon" href="http://www.twopennycode.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://www.twopennycode.com/css/style.css">
+		<link rel="stylesheet" href="http://www.twopennycode.com/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://www.twopennycode.com/css/monosocialiconsfont.css">
+		
+
+		
+		<link href="http://www.twopennycode.com/index.xml" rel="alternate" type="application/rss+xml" title="Twopenny code" />
+		
+
+		<meta property="og:title" content="Angular2 first steps" />
+<meta property="og:description" content="Doing first steps in angular In this post, I will share my learning curve of angular2 and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem struggling findings.
+Tour of heroes The first step for me was the Tour of heroes tutorial. And it was awesome." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.twopennycode.com/post/angular2-firststeps/" />
+
+
+<meta property="og:updated_time" content="2016-12-26T11:46:25-08:00"/>
+
+
+
+
+
+
+
+
+
+
+	    
+	    
+<meta itemprop="name" content="Angular2 first steps">
+<meta itemprop="description" content="Doing first steps in angular In this post, I will share my learning curve of angular2 and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem struggling findings.
+Tour of heroes The first step for me was the Tour of heroes tutorial. And it was awesome.">
+
+
+<meta itemprop="dateModified" content="2016-12-26T11:46:25-08:00" />
+<meta itemprop="wordCount" content="1381">
+
+
+
+<meta itemprop="keywords" content="angular2,slopflow.editor,typescript," />
+
+	    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Angular2 first steps"/>
+<meta name="twitter:description" content="Doing first steps in angular In this post, I will share my learning curve of angular2 and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem struggling findings.
+Tour of heroes The first step for me was the Tour of heroes tutorial. And it was awesome."/>
+<meta name="twitter:site" content="@https://www.twitter.com/twopSK"/>
+
+
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://www.twopennycode.com/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://www.twopennycode.com/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://www.twopennycode.com/index.xml">Subscribe</a>
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Angular2 first steps</h1>
+                    <h2 class="headline">
+                    December 26, 2016 
+                    <br>
+                    
+                    
+                        
+                            <a href="http://www.twopennycode.com/tags/angular2">angular2</a>
+                        
+                            <a href="http://www.twopennycode.com/tags/typescript">typescript</a>
+                        
+                            <a href="http://www.twopennycode.com/tags/slopflow.editor">slopflow.editor</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h1 id="doing-first-steps-in-angular">Doing first steps in angular</h1>
+
+<p>In this post, I will share my learning curve of <a href="https://angular.io/">angular2</a> and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem <del>struggling</del> findings.</p>
+
+<h2 id="tour-of-heroes">Tour of heroes</h2>
+
+<p>The first step for me was the <a href="https://angular.io/docs/ts/latest/tutorial/">Tour of heroes</a> tutorial. And it was awesome. Unfortunately, I haven&rsquo;t finished the routing chapter because it was not working at the time, it seems that it was in the middle of rework of some sort. So <a href="https://angular.io/docs/ts/latest/guide/router.html">routing</a> is on my endless list of &ldquo;things to learn&rdquo;.</p>
+
+<p>I came from a C#/C++ background of doing things and it was almost natural for me to start with <a href="https://www.typescriptlang.org/">TypeScript</a>. It did make my learning curve way smoother, and it actually was the key factor why I picked angular2 to start my front-end exploration.</p>
+
+<p>I do recommend the tutorial for everybody new to the ecosystem. The <a href="https://angular.io/docs/ts/latest/quickstart.html">Quick Start guide</a> was super helpful, its <a href="https://github.com/angular/quickstart">repo</a> also contains unit testing boilerplate which is totally awesome (it took me a couple of evenings to run my first karma/jasmine test). Unfortunately, it uses <a href="https://github.com/systemjs/systemjs">systemjs</a> instead of <a href="https://webpack.github.io/">webpack</a> which gave me a lot of extra work to do, since the majority of relevant samples use webpack which doesn&rsquo;t even remotely look close to systemjs in terms of project structure.</p>
+
+<p>One of my goals was to understand how to organize the state of an application in angular:</p>
+
+<pre><code class="language-js">@Injectable()
+export class HeroService {
+  getHeroes(): Hero[] {
+    return HEROES;
+  }
+</code></pre>
+
+<p>There are a couple of really cool concepts built-in that example:
+* It is decoupled from a view.
+* It takes advantage of <a href="https://angular.io/docs/ts/latest/cookbook/dependency-injection.html">angular DI</a> to be easily reusable everywhere.</p>
+
+<p>While I do appreciate the flexibility it is not opinionated enough to force me into any architectural decisions right away. And I fall into the trap of coupling state and behavior in my initial version.</p>
+
+<h2 id="applying-it-to-slopflow-https-github-com-twop-slopflow-editor">Applying it to <a href="https://github.com/twop/SlopFlow.Editor">SlopFlow</a></h2>
+
+<p>The project aims to be a web editor for flow based visual programming. Where <strong>Node</strong> is a logic primitive of building <strong>Flows</strong> which can be used in other high order flows. Example: flow that calculates a sum of 4 numbers can be represented as graph that consists of 3 <strong>sum2</strong> nodes.</p>
+
+<pre><code>num1
+     \
+num2 - sum2 \
+              sum2 - result
+num3 - sum2 /
+     / 
+num4
+</code></pre>
+
+<p>The editor has to have a rich set of features including undo/redo and drag&amp;drop with a desktop-like user experience. That&rsquo;s why I think angular2 is a good fit.</p>
+
+<h2 id="model">Model</h2>
+
+<p>I knew I wanted to decouple presentational layer from the logic but where do you draw the line? What if I have a logic of building layouts? Where should Drag&amp;Drop handling go?</p>
+
+<p>So I decided to build UnitTestable core of the application almost agnostic to angular utilizing only DI and then move to UI. I started with the following model:</p>
+
+<p>A generic port can be described as:</p>
+
+<pre><code class="language-js">export interface IPort
+{
+  name: string;
+  dataType: DataType; // int, string, float or MyCustomType
+  isInput : boolean;
+}
+</code></pre>
+
+<p>Any element can be described as:</p>
+
+<pre><code class="language-js">export interface INode // Flow and Node will implement it
+{
+  name: string;
+  inputs: IPort[];
+  outputs: IPort[];
+}
+</code></pre>
+
+<p>Node implementation:</p>
+
+<pre><code class="language-js">export class Node implements INode
+{
+  constructor(public name: string) { }
+
+  inputs: IPort[] = [];
+  outputs: IPort[] = [];
+}
+</code></pre>
+
+<p>With Flow, it is a little bit trickier because it can have nested elements of type Flow and Node. You can also have multiple elements of the same type within Flow, in other words <strong>instances</strong> of templates:</p>
+
+<pre><code class="language-js">export class NodeInstance implements INode
+{
+  constructor(public name: string, public node:INode) {}
+
+  inputs: IPort[];
+  outputs: IPort[];
+}
+
+// Ports should be created from the template using wrapPort:
+const wrapPort = (port: IPort) =&gt; {name: port.name, dataType: port.dataType, isInput: port.isInput};
+
+export class Flow implements INode
+{
+  constructor(public name:string) {}
+
+  inputs: IPort[] = [];
+  outputs: IPort[] = [];
+
+  nodes: NodeInstance[] = [];
+  links: PortLink[] = [];
+}
+
+export class PortLink
+{
+  constructor(
+    public fromNode: NodeInstance,
+    public fromPort: IPort,
+    public toNode: NodeInstance,
+    public toPort: IPort)
+  {}
+}
+</code></pre>
+
+<p>Root object:</p>
+
+<pre><code class="language-js">export class Scene
+{
+  activeWorkspace: Workspace = null;
+
+  nodes: Node[] = [];
+  nodeWorkspaces: NodeWorkspace[] = [];
+
+  flows:Flow[] = [];
+  flowWorkspaces: FlowWorkspace[] = []; 
+
+  // handling scene commands: adding/removing Node/Flow
+}
+</code></pre>
+
+<p>Note that neither of them has any sort of id and all relationships are represented by references. Each individual component is sufficient to describe its own state which makes component traversal super easy. After reading about <a href="http://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">smart angular2 detection</a> I thought that I didn&rsquo;t need any sort of normalization and could get away with just modifying objects directly.</p>
+
+<p>There are several downsides:
+* There is no way to build a route to the Flow in such model.
+* It is really hard to flatten the state to serialize/deserialize from a DB.
+* When do I rebuild <strong>NodeInstance</strong> if the underlying template changes?</p>
+
+<p>Angular2 change detection worked like magic and for a while I was able to make progress without any obstacles.</p>
+
+<pre><code class="language-js">@Component()
+export class AssetsComponent 
+{
+  constructor(public scene: Scene) { }
+  // implementation of activateWorkspace
+}
+</code></pre>
+
+<pre><code class="language-html">&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;card-block&quot;&gt;
+    &lt;span class=&quot;my-panel-header&quot;&gt;Nodes&lt;/span&gt;
+       &lt;ul class=&quot;nodeList&quot;&gt;
+      &lt;li *ngFor=&quot;let workspace of scene.getNodeWorkspaces()&quot; [class.selected]=&quot;workspace === scene.activeWorkspace&quot;
+          (click)=&quot;activateWorkspace(workspace)&quot;&gt;
+        &lt;span class=&quot;type-marker node-marker&quot;&gt;&amp;lt;N&amp;gt;&lt;/span&gt;&lt;span class=&quot;vertical-middle&quot;&gt;{{workspace.name}}&lt;/span&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p><code>let workspace of scene.getNodeWorkspaces() + {{workspace.name}}</code> worked just fine detecting node renaming.</p>
+
+<h2 id="modifying-state">Modifying state</h2>
+
+<p>It is natural to have undo/redo pattern in an editor. So any changes related to a Flow/Node have to be undoable and scoped to an entity (each entity has its own history). There are two general approaches:</p>
+
+<ul>
+<li>Command pattern. Each command has enough information to change state and revert it back.</li>
+<li>Keep the full history of object states. It takes more space but makes adding features a breeze: you don&rsquo;t need to think about reverting changes it is essentially &ldquo;free&rdquo;.</li>
+</ul>
+
+<p>I decided to implement Command pattern:</p>
+
+<pre><code class="language-js">export interface IWorkSpaceCommand
+{
+  Execute(workspace: Workspace, logger: Log): void;
+  Revert(workspace: Workspace, logger: Log): void;
+}
+
+export abstract class Workspace
+{
+  private undoCommands: IWorkSpaceCommand[] = [];
+  private redoCommands: IWorkSpaceCommand[] = [];
+
+  canRedo = (): boolean =&gt; this.redoCommands.length &gt; 0;
+  canUndo = (): boolean =&gt; this.undoCommands.length &gt; 0;
+
+  undo(): void
+  {
+    if (!this.canUndo())
+      return;
+
+    var command = this.undoCommands.pop();
+    this.revertCommandInternal(command);
+    this.redoCommands.push(command);
+  }
+
+  redo(): void
+  {
+    if (!this.canRedo())
+      return;
+
+    var command = this.redoCommands.pop();
+    this.executeCommandInternal(command);
+    this.undoCommands.push(command);
+  }
+
+  protected abstract onModifiedInternal(): void;
+
+  private executeCommandInternal(command: IWorkSpaceCommand): void
+  {
+    command.Execute(this, this.log);
+    this.onModifiedInternal();
+    this.modified.emit(this);
+  }
+
+  private revertCommandInternal(command: IWorkSpaceCommand): void
+  {
+    command.Revert(this, this.log);
+    this.onModifiedInternal();
+    this.modified.emit(this);
+  }
+</code></pre>
+
+<p>It was relatively fast to add basic commands:</p>
+
+<pre><code class="language-js">export class NewPortCommand implements IWorkSpaceCommand
+{
+  constructor(private port: IPort) {}
+
+  Execute(workspace: Workspace, logger: Log): void
+  {
+    workspace.addPort( this.port ); //actual implementation in the workspace.
+    logger.debug(`added port ${this.port.name} in ${workspace.name}`);
+  }
+
+  Revert(workspace: Workspace, logger: Log): void
+  {
+    workspace.removePort( this.port);
+    logger.debug(`removed port ${this.port.name} in ${workspace.name}`);
+  }
+}
+
+export class Workspace
+{
+  addPort(port: NodePort): void
+  {
+    this.node.ports.push(port);
+  }
+
+  removePort(port: NodePort): void
+  {
+    const index = this.node.ports.indexOf(port, 0);
+    if (index &gt; -1)
+      ports.splice(index, 1);
+  }
+}
+</code></pre>
+
+<p>So in order to get a new piece of functionality I need to do the following:
+* Write business logic in the workspace class which will modify the model (don&rsquo;t forget to support undo).
+* Wrap that into <strong>IWorkSpaceCommand</strong>.
+* Think about command validation.
+* Think about propagating changes (at what point do I rebuild the node layout?).</p>
+
+<p>So I stopped adding features after I had the following folder Structure:</p>
+
+<pre><code>Scene:
+| - workspace.ts
+| ...
+| - Commands:
+|| - deletePortCommand.ts
+|| - editNodeCommand.ts
+|| - editPortCommand.ts
+|| - newFlowCommand.ts
+|| - newNodeCommand.ts
+|| - sceneCommand.ts
+|| - workspaceCommand.ts
+|| - ...
+</code></pre>
+
+<p>Even though I have just one place to implement business logic and the entire state is represented by a single object (aka &ldquo;single source of truth&rdquo;) that approach just doesn&rsquo;t scale well. Too much boilerplate. And that&rsquo;s when I decided to rewrite the application using <a href="http://redux.js.org/">redux</a>. It has &ldquo;free&rdquo; undo/redo support and it is very opinionated on how the app state should be managed. I&rsquo;m going to talk about my experience redux+angular2 in the next posts.</p>
+
+<h2 id="in-conclusion">In conclusion</h2>
+
+<p>Angular2 was quite easy to start with (tutorial was really good). It doesn&rsquo;t force you into a particular design pattern(I wish it would) but OOP approach seems like a good fit initially which was actually a trap for me. I think if your Component has a lot of logic you are doing it wrong.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/twopSK">
+                        <img class="avatar" src="http://www.twopennycode.com/images/avatar.png">
+                        <div>
+                            <span class="dark">Simon Korzunov</span>
+                            <span>A former game developer, proud father, C# lover, WedDev learner/struggler and a Microsoft employee.</span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fwww.twopennycode.com%2fpost%2fangular2-firststeps%2f - Angular2%20first%20steps by @twopSK"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'spf13';
+    var disqus_identifier = 'http:\/\/www.twopennycode.com\/post\/angular2-firststeps\/';
+    var disqus_title = 'Angular2 first steps';
+    var disqus_url = 'http:\/\/www.twopennycode.com\/post\/angular2-firststeps\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/post/angular2-firststeps/">Angular2 first steps<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/tags/angular2/">Angular2<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/post/">Posts<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/tags/slopflow/index.editor/">Slopflow.Editor<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/tags/">Tags<aside class="dates">Jan 1</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/">Twopenny code<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://www.twopennycode.com/tags/typescript/">Typescript<aside class="dates">Dec 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.facebook.com/simon.kor.712">
+        circlefacebook
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/twop">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/twopSK">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        &copy; Simon Korzunov
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://www.twopennycode.com/js/main.js"></script>
+<script src="http://www.twopennycode.com/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>
