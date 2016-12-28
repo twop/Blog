@@ -1,17 +1,15 @@
 +++
 date = "2016-12-26T11:46:25-08:00"
-title = "Angular2 first steps"
+title = "Angular2: creating data model."
 draft = false
 
 tags = [
   "angular2",
   "typescript",
-  "slopflow.editor",
+  "SlopFlow",
   ]
 
 +++
-
-# Doing first steps in angular
 
 In this post, I will share my learning curve of [angular2](https://angular.io/) and how to manage application state. As a small reminder: I have almost zero professional experience in JavaScript and web front-end, in general, so my overall learning curve includes a lot of js ecosystem ~~struggling~~ findings.
 
@@ -35,6 +33,7 @@ export class HeroService {
 ```
 
 There are a couple of really cool concepts built-in that example:
+
 * It is decoupled from a view.
 * It takes advantage of [angular DI](https://angular.io/docs/ts/latest/cookbook/dependency-injection.html) to be easily reusable everywhere.
 
@@ -154,6 +153,7 @@ export class Scene
 Note that neither of them has any sort of id and all relationships are represented by references. Each individual component is sufficient to describe its own state which makes component traversal super easy. After reading about [smart angular2 detection](http://blog.angular-university.io/how-does-angular-2-change-detection-really-work/) I thought that I didn't need any sort of normalization and could get away with just modifying objects directly.
 
 There are several downsides:
+
 * There is no way to build a route to the Flow in such model.
 * It is really hard to flatten the state to serialize/deserialize from a DB. 
 * When do I rebuild **NodeInstance** if the underlying template changes?
@@ -282,6 +282,7 @@ export class Workspace
 ```
 
 So in order to get a new piece of functionality I need to do the following:
+
 * Write business logic in the workspace class which will modify the model (don't forget to support undo).
 * Wrap that into **IWorkSpaceCommand**.
 * Think about command validation.
