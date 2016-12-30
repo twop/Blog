@@ -2,6 +2,7 @@
 date = "2016-03-18T11:46:25-08:00"
 title = "First post"
 draft = false
+description = "Small introduction."
 
 tags = [
   "life",

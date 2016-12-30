@@ -2,6 +2,7 @@
 date = "2016-04-15T11:46:25-08:00"
 title = "Visual Programming - Engine Prototype and Design thoughts"
 draft = false
+description = "Talking about Flow usecases."
 
 tags = [
   "C#",
@@ -12,13 +13,13 @@ tags = [
 
 In the [last]({{< ref "post/2016-03/visual-programming.md" >}}) post, I talked about the concept of Visual Programming. Today I want to share my design ideas for the tool and post a little bit of code from the prototype. I came up with a name: SlopFlow. While you can find a lot of tools with a "flow" part in them, I think it is not an originality contest, right? You can find it [here](https://github.com/twop/SlopFlow).  
 
-##### Things I want to achieve with the project:  
+#### Things I want to achieve with the project:  
 * JSON data format for describing graphs. It should be universal and simple enough to generate code on any platform while being readable and accessible in notepad.
 * Modular. I want to make it possible to rewrite any part of the tool manually. Basically, provide a set of tools that can be combined together to form a "real" application.
 * Extendable. I want to provide an implementation of code generation in one language initially (preferably C#), but make it possible to reuse the same data format for other languages as well (C++, JS/TypeScript).
 * Provide two versions of graph editing experience: web and desktop. At the moment, I'm toying with [electron](http://electron.atom.io/) platform to reuse the code and make it cross-platform from the start.
 
-##### Prototype
+#### Prototype
 I usually tend to start the design of a system from a final user perspective: who, why and how people are going to use it? For the project, I decided to start from a developer's perspective who is going to integrate a generated result to the system. The task itself is nothing too fancy: calculate a sum of 4 numbers which can be represented by a graph of 3 sum2 elements:  
 
 [![sum4](/post/2016-04/visual-programming-engine-prototype/sum4.png)](/post/2016-04/visual-programming-engine-prototype/sum4.png)
@@ -116,7 +117,7 @@ The flow can be divided into several parts:
 
 *Worth mentioning: currently a generated flow doesn't have a base class, and I want to try to keep it that way for simplicity purpose.*
 
-##### Short summary:  
+#### Short summary  
 We looked at potential usages of flows: function-like and event-based. Flows should be treated as source code and it is up to developers to execute them: make that code accessible from data editor or call it directly. Flows can be combined with each other to produce a more complex logic.  
 
 In this post, I'm not going to cover Node implementation (Sum class), but I will provide implementation details in the next one, hopefully.  

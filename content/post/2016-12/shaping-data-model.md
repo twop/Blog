@@ -1,7 +1,8 @@
 +++
 date = "2016-12-26T11:46:25-08:00"
-title = "Angular2: creating data model."
+title = "Shaping data model for SlopFlow."
 draft = false
+description = "What can go wrong with OOP approach?"
 
 tags = [
   "angular2",
@@ -40,24 +41,16 @@ There are a couple of really cool concepts built-in that example:
 While I do appreciate the flexibility it is not opinionated enough to force me into any architectural decisions right away. And I fall into the trap of coupling state and behavior in my initial version.
 
 
-## Applying it to [SlopFlow](https://github.com/twop/SlopFlow.Editor)
+#### Applying it to [SlopFlow](https://github.com/twop/SlopFlow.Editor)
 
 The project aims to be a web editor for flow based visual programming. Where **Node** is a logic primitive of building **Flows** which can be used in other high order flows. Example: flow that calculates a sum of 4 numbers can be represented as graph that consists of 3 **sum2** nodes.
 
-```
-num1
-     \
-num2 - sum2 \
-              sum2 - result
-num3 - sum2 /
-     / 
-num4
-```
+[![sum4](/post/2016-12/shaping-data-model/sum4.png)](/post/2016-12/shaping-data-model/sum4.png)
 
 The editor has to have a rich set of features including undo/redo and drag&drop with a desktop-like user experience. That's why I think angular2 is a good fit.
 
 
-## Model
+#### Model
 
 I knew I wanted to decouple presentational layer from the logic but where do you draw the line? What if I have a logic of building layouts? Where should Drag&Drop handling go? 
 
@@ -119,17 +112,7 @@ export class Flow implements INode
   outputs: IPort[] = [];
 
   nodes: NodeInstance[] = [];
-  links: PortLink[] = [];
-}
-
-export class PortLink
-{
-  constructor(
-    public fromNode: NodeInstance,
-    public fromPort: IPort,
-    public toNode: NodeInstance,
-    public toPort: IPort)
-  {}
+  links: PortLink[] = []; // PortLink is {fromPort: IPort, toPort: IPort}
 }
 ```
 
@@ -184,9 +167,9 @@ export class AssetsComponent
 ```
 ```let workspace of scene.getNodeWorkspaces() + {{workspace.name}}``` worked just fine detecting node renaming.
 
-## Modifying state
+#### Modifying state
 
-It is natural to have undo/redo pattern in an editor. So any changes related to a Flow/Node have to be undoable and scoped to an entity (each entity has its own history). There are two general approaches:
+So how do I support undo/redo pattern in an editor? So any changes related to a Flow/Node have to be undoable and scoped to an entity (each entity has its own history). There are two general approaches to solve the problem:
 
 * Command pattern. Each command has enough information to change state and revert it back. 
 * Keep the full history of object states. It takes more space but makes adding features a breeze: you don't need to think about reverting changes it is essentially "free". 
@@ -307,7 +290,7 @@ Scene:
 
 Even though I have just one place to implement business logic and the entire state is represented by a single object (aka "single source of truth") that approach just doesn't scale well. Too much boilerplate. And that's when I decided to rewrite the application using [redux](http://redux.js.org/). It has "free" undo/redo support and it is very opinionated on how the app state should be managed. I'm going to talk about my experience redux+angular2 in the next posts.
 
-## In conclusion
+#### In conclusion
 
 Angular2 was quite easy to start with (tutorial was really good). It doesn't force you into a particular design pattern(I wish it would) but OOP approach seems like a good fit initially which was actually a trap for me. I think if your Component has a lot of logic you are doing it wrong.
 

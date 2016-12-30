@@ -2,6 +2,7 @@
 date = "2016-08-28T11:46:25-08:00"
 title = "About Nodes implementation and Angular2"
 draft = false
+description = "Diving deep into C# prototype details and choosing UI framework."
 
 tags = [
   "C#",

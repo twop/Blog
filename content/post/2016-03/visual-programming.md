@@ -2,6 +2,7 @@
 date = "2016-03-28T11:46:25-08:00"
 title = "Visual programming"
 draft = false
+description = "Why do we even need it?"
 
 tags = [
   "designers vs programmers",

@@ -2,6 +2,7 @@
 date = "2016-09-25T11:46:25-08:00"
 title = "About my first experience with Angular2 and web development tools"
 draft = false
+description = "Talking about why it is good to be a web developer, complaining about JS fatigue and picking IDE."
 
 tags = [
   "TypeScript",
