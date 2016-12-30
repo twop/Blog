@@ -43,7 +43,7 @@ While I do appreciate the flexibility it is not opinionated enough to force me i
 
 #### Applying it to [SlopFlow](https://github.com/twop/SlopFlow.Editor)
 
-The project aims to be a web editor for flow based visual programming. Where **Node** is a logic primitive of building **Flows** which can be used in other high order flows. Example: flow that calculates a sum of 4 numbers can be represented as graph that consists of 3 **sum2** nodes.
+The project aims to be a web editor for visual programming tool. Where **Node** is a logic primitive of building **Flows** which can be used in other high order flows. Example: flow that calculates a sum of 4 numbers can be represented as graph that consists of 3 **sum2** nodes.
 
 [![sum4](/post/2016-12/shaping-data-model/sum4.png)](/post/2016-12/shaping-data-model/sum4.png)
 
