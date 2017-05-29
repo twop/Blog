@@ -1,2 +1,2 @@
 # Blog
-repo for my blog 
+repo for my blog http://twopennycode.com
