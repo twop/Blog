@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "http://twopennycode.com/"
+baseurl = "https://twopennycode.com/"
 languageCode = "en-us"
 title = "Twopenny code"
 theme = "hugo-cactus-theme"
